@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HotGames</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      background: linear-gradient(135deg, #ff9966, #ff5e62, #ffb347);
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #232323;
+    }
+    .banner {
+      background: #d7263d;
+      color: #fff;
+      padding: 40px 0 28px 0;
+      text-align: center;
+      font-family: 'Luckiest Guy', cursive, sans-serif;
+      font-size: 2.8em;
+      letter-spacing: 4px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.11);
+      user-select: none;
+      position: fixed;
+      top: 0;
+      width: 100vw;
+      left: 0;
+      z-index: 999;
+    }
+    .main-content {
+      margin-top: 110px;
+    }
+    .game-link {
+      text-decoration: none;
+      color: inherit;
+      outline: none;
+      display: inline-block;
+    }
+    .game-link:focus,
+    .game-link:active,
+    .game-link:visited {
+      outline: none;
+      text-decoration: none;
+      color: inherit;
+    }
+    /* Sliding marquee section */
+    .slider-section {
+      max-width: 1100px;
+      margin: 40px auto 0 auto;
+      background: rgba(255,255,255,0.92);
+      border-radius: 18px;
+      box-shadow: 0 3px 16px #0001;
+      padding: 16px 12px 24px 12px;
+      position: relative;
+    }
+    .slider-title {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #d7263d;
+      margin-bottom: 9px;
+      padding-left:10px;
+      letter-spacing:1px;
+    }
+    .games-slider-marquee {
+      overflow: hidden;
+      position: relative;
+      white-space: nowrap;
+      width: 100%;
+      /* extra for mobile overflow scroll */
+    }
+    .games-slider-track {
+      display: inline-flex;
+      gap: 20px;
+      align-items: flex-start;
+      animation: marquee-slider 20s linear infinite;
+    }
+    @keyframes marquee-slider {
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    .slider-fade {
+      pointer-events: none;
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; width: 40px;
+      background: linear-gradient(to right, #fff 65%, #ffffff00);
+      z-index: 2;
+      display: block;
+    }
+    .slider-fade.slider-fade-right {
+      left: auto; right: 0;
+      background: linear-gradient(to left, #fff 60%, #ffffff00);
+    }
+    .game-card.slider {
+      width: 145px;
+      min-width: 145px;
+      padding: 10px 8px 12px 8px;
+      margin: 0 2px;
+      font-size: 0.93em;
+      box-shadow: 0 2px 7px #d7263d1d;
+    }
+    /* Static section / grid list */
+    .games-section {
+      max-width: 1100px;
+      margin: 35px auto 0 auto;
+      background: rgba(245,245,255,0.95);
+      border-radius: 22px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.13);
+      padding: 1.5em 1.5em 2em 1.5em;
+    }
+    .games-title {
+      font-size: 2em;
+      text-align: left;
+      margin-bottom: 16px;
+      color: #d7263d;
+      font-weight: bold;
+      padding-left:8px;
+    }
+    .games-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px 22px;
+      justify-content: flex-start;
+    }
+    /* Game Card Styling */
+    .game-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 10px #0001, 0 2px 30px #ffd6dc22;
+      width: 185px;
+      padding: 18px 16px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform .15s, box-shadow .15s;
+      cursor: pointer;
+      position: relative;
+    }
+    .game-card:hover {
+      transform: translateY(-6px) scale(1.045);
+      box-shadow: 0 8px 32px #d7263d44, 0 2px 30px #ffd6dc22;
+      z-index: 5;
+    }
+    .game-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 2px 12px #d7263d33;
+      margin-bottom: 11px;
+      background: #ffe3e6;
+      border: 2.5px solid #fff3;
+      transition: transform 0.18s cubic-bezier(.39,1.88,.29,1.15), box-shadow 0.18s;
+    }
+    .game-card:hover .game-logo,
+    .game-logo:hover {
+      transform: scale(1.22);
+      box-shadow: 0 8px 32px #d7263d66;
+      z-index: 9;
+    }
+    .game-name {
+      font-size: 1.12em;
+      font-weight: bold;
+      color: #222;
+      margin-bottom: 5px;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 133px;
+    }
+    .game-type {
+      font-size: 0.93em;
+      color: #d7263d;
+      margin-bottom: 8px;
+      white-space: nowrap;
+    }
+    .game-rating {
+      background: #ffe1e3;
+      color: #d7263d;
+      border-radius: 12px;
+      padding: 1.5px 10px;
+      font-size: 0.95em;
+      font-weight: 500;
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      box-shadow: 0 1px 5px #ffd6dc33;
+    }
+    .install-btn {
+      margin-top: 9px;
+      background: linear-gradient(90deg,#fd5b63 45%, #ffbb62 100%);
+      color: #fff;
+      border: none;
+      border-radius: 22px;
+      padding: 6px 28px;
+      font-size: 0.98em;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #ffd6dc44;
+      transition: background .17s;
+      letter-spacing:1.5px;
+    }
+    .install-btn:hover {
+      background: linear-gradient(90deg,#ffbb62 30%, #fd5b63 100%);
+      color:#f3f1f1;
+    }
+    /* Responsive Styles */
+    @media (max-width: 1100px) {
+      .slider-section, .games-section {max-width: 98vw;}
+    }
+    @media (max-width: 900px) {
+      .games-list {justify-content: center;}
+      .games-section {padding: 1.2em 2vw;}
+      .slider-section {padding: 1em 2vw;}
+      .games-slider-track .game-card.slider {min-width: 120px; width: 120px;}
+    }
+    @media (max-width: 600px) {
+      .banner {font-size: 1.3em;}
+      .main-content {margin-top: 85px;}
+      .games-section {padding:1em 1vw;}
+      .games-title {font-size:1.15em;}
+      .game-card {width: 95vw; max-width: 320px;}
+      .games-list {gap: 18px 0;}
+      .slider-section {padding: .7em 0.3em;}
+      .games-slider-track .game-card.slider {min-width: 100px; width: 100px; font-size:0.79em;}
+      .game-name {width:100px;}
+      .slider-title {font-size: 1em;}
+      .games-slider-marquee {padding-bottom:10px;}
+      .slider-fade,.slider-fade.slider-fade-right{width:14vw;min-width:22px;}
+    }
+    @media (max-width: 400px) {
+      .game-card {max-width:207px; width:96vw;}
+      .games-slider-track .game-card.slider {min-width:80px; width:80px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">HOTGAMES</div>
+  <div class="main-content">
+
+    <!-- Sliding Games Section (Seamless Marquee) -->
+    <div class="slider-section">
+      <div class="slider-title">🔥 Top Picks</div>
+      <div class="games-slider-marquee">
+        <div class="slider-fade"></div>
+        <div class="slider-fade slider-fade-right"></div>
+        <div class="games-slider-track">
+          <!-- CARD SET START -->
+          <a href="https://tajuddin2004.github.io/Game-Fortnite/" class="game-link">
+            <div class="game-card slider">
+              <span class="game-rating">4.5 ★</span>
+              <img class="game-logo" src="fortnite.jpg" alt="Fortnite Logo">
+              <div class="game-name">Fortnite</div>
+              <div class="game-type">Battle Royale</div>
+            </div>
+          </a>
+          <a href="minecraft.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.6 ★</span>
+            <img class="game-logo" src="minecraft.webp" alt="Minecraft Logo">
+            <div class="game-name">Minecraft</div>
+            <div class="game-type">Sandbox</div>
+          </div>
+          </a>
+          <!--<a href="https://tajuddin2004.github.io/Game-Apex/" class="game-link">-->
+          <a href="apex.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.8 ★</span>
+            <img class="game-logo" src="apex.png">
+            <div class="game-name">Apex Legends</div>
+            <div class="game-type">Shooter</div>
+          </div>
+          </a>
+          <a href="https://tajuddin2004.github.io/Game-Valorant/" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.7 ★</span>
+            <img class="game-logo" src="valo.png" alt="Valorant Logo">
+            <div class="game-name">Valorant</div>
+            <div class="game-type">FPS</div>
+          </div>
+          </a>
+          <a href="warzone.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.4 ★</span>
+            <img class="game-logo" src="warzone.jpg" alt="Warzone Logo">
+            <div class="game-name">CoD: Warzone</div>
+            <div class="game-type">Shooter</div>
+          </div>
+          </a>
+          <a href="genshinimpact.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.7 ★</span>
+            <img class="game-logo" src="genshinimpact.jpg" alt="Genshin Impact Logo">
+            <div class="game-name">Genshin Impact</div>
+            <div class="game-type">Adventure</div>
+          </div>
+          </a>
+          <a href="https://tajuddin2004.github.io/Game-AmongUs/" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.3 ★</span>
+            <img class="game-logo" src="amongus.png" alt="Among Us Logo">
+            <div class="game-name">Among Us</div>
+            <div class="game-type">Party</div>
+          </div>
+          </a>
+          <a href="rocketleague.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.6 ★</span>
+            <img class="game-logo" src="rocketleague.jpg" alt="Rocket League Logo">
+            <div class="game-name">Rocket League</div>
+            <div class="game-type">Sports</div>
+          </div>
+          </a>
+          <!-- CARD SET END -->
+          <!-- DUPLICATE CARD SET FOR LOOP -->
+          <a href="https://tajuddin2004.github.io/Game-Fortnite/" class="game-link">
+            <div class="game-card slider">
+              <span class="game-rating">4.5 ★</span>
+              <img class="game-logo" src="fortnite.jpg" alt="Fortnite Logo">
+              <div class="game-name">Fortnite</div>
+              <div class="game-type">Battle Royale</div>
+            </div>
+          </a>
+          <a href="minecraft.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.6 ★</span>
+            <img class="game-logo" src="minecraft.webp" alt="Minecraft Logo">
+            <div class="game-name">Minecraft</div>
+            <div class="game-type">Sandbox</div>
+          </div>
+          </a>
+          <!--<a href="https://tajuddin2004.github.io/Game-Apex/" class="game-link">-->
+          <a href="apex.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.8 ★</span>
+            <img class="game-logo" src="apex.png">
+            <div class="game-name">Apex Legends</div>
+            <div class="game-type">Shooter</div>
+          </div>
+          </a>
+          <a href="https://tajuddin2004.github.io/Game-Valorant/" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.7 ★</span>
+            <img class="game-logo" src="valo.png" alt="Valorant Logo">
+            <div class="game-name">Valorant</div>
+            <div class="game-type">FPS</div>
+          </div>
+          </a>
+          <a href="warzone.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.4 ★</span>
+            <img class="game-logo" src="warzone.jpg" alt="Warzone Logo">
+            <div class="game-name">CoD: Warzone</div>
+            <div class="game-type">Shooter</div>
+          </div>
+          </a>
+           <a href="genshinimpact.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.7 ★</span>
+            <img class="game-logo" src="genshinimpact.jpg" alt="Genshin Impact Logo">
+            <div class="game-name">Genshin Impact</div>
+            <div class="game-type">Adventure</div>
+          </div>
+          </a>
+          <a href="https://tajuddin2004.github.io/Game-AmongUs/" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.3 ★</span>
+            <img class="game-logo" src="amongus.png" alt="Among Us Logo">
+            <div class="game-name">Among Us</div>
+            <div class="game-type">Party</div>
+          </div>
+          </a>
+          <a href="rocketleague.html" class="game-link">
+          <div class="game-card slider">
+            <span class="game-rating">4.6 ★</span>
+            <img class="game-logo" src="rocketleague.jpg" alt="Rocket League Logo">
+            <div class="game-name">Rocket League</div>
+            <div class="game-type">Sports</div>
+          </div>
+          </a>
+          <!-- DUPLICATE CARD SET END -->
+        </div>
+      </div>
+    </div>
+    <!-- End Sliding Marquee -->
+
+    <!-- Static (Grid) Games List Section -->
+    <div class="games-section">
+      <div class="games-title">🕹️ All Trending Games</div>
+      <div class="games-list">
+        <div class="game-card">
+          <span class="game-rating">4.5 ★</span>
+          <img class="game-logo" src="fortnite.jpg" alt="Fortnite Logo">
+          <div class="game-name">Fortnite</div>
+          <div class="game-type">Battle Royale</div>
+          <button class="install-btn" onclick="location.href='https://tajuddin2004.github.io/Game-Fortnite/'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.6 ★</span>
+          <img class="game-logo" src="minecraft.webp" alt="Minecraft Logo">
+          <div class="game-name">Minecraft</div>
+          <div class="game-type">Sandbox</div>
+          <button class="install-btn" onclick="location.href='minecraft.html'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.8 ★</span>
+          <img class="game-logo" src="apex.png" alt="Apex Legends Logo">
+          <div class="game-name">Apex Legends</div>
+          <div class="game-type">Shooter</div>
+          <button class="install-btn" onclick="location.href='apex.html'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.7 ★</span>
+          <img class="game-logo" src="valo.png" alt="Valorant Logo">
+          <div class="game-name">Valorant</div>
+          <div class="game-type">FPS</div>
+          <button class="install-btn" onclick="location.href='https://tajuddin2004.github.io/Game-Valorant/'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.4 ★</span>
+          <img class="game-logo" src="warzone.jpg" alt="Warzone Logo">
+          <div class="game-name">CoD: Warzone</div>
+          <div class="game-type">Shooter</div>
+          <button class="install-btn" onclick="location.href='warzone.html'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.7 ★</span>
+          <img class="game-logo" src="genshinimpact.jpg" alt="Genshin Impact Logo">
+          <div class="game-name">Genshin Impact</div>
+          <div class="game-type">Adventure</div>
+          <button class="install-btn" onclick="location.href='genshinimpact.html'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.3 ★</span>
+          <img class="game-logo" src="amongus.png" alt="Among Us Logo">
+          <div class="game-name">Among Us</div>
+          <div class="game-type">Party</div>
+          <button class="install-btn" onclick="location.href='https://tajuddin2004.github.io/Game-AmongUs/'">Install</button>
+        </div>
+        <div class="game-card">
+          <span class="game-rating">4.6 ★</span>
+          <img class="game-logo" src="rocketleague.jpg" alt="Rocket League Logo">
+          <div class="game-name">Rocket League</div>
+          <div class="game-type">Sports</div>
+          <button class="install-btn" onclick="location.href='rocketleague.html'">Install</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+              </html>
+                
